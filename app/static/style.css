@@ -1,0 +1,19 @@
+.listcell {
+    padding-right: 5em;
+}
+
+.listnav {
+    background-color: lightsteelblue;
+}
+
+.pagenav {
+    background-color: lightgray;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+* {
+    font-family: "Courier New", Courier, monospace;
+}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+
+{% macro with_errors(field) %}
+<div class="form_field">
+    {% if field.errors %}
+        {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
+        {{ field.label }} {{ field(class=css_class, **kwargs) }}
+        <ul class="errors">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
+    {% else %}
+        {{ field.label }} {{ field(**kwargs) }}
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% block content %}
+<script type="text/javascript">
+    function submitAddform()
+    {
+        document.AddForm.submit();
+        return false;
+    }
+</script>
+<h2>Planning Poker</h2>
+
+<table>
+    <thead>
+        <td class="underline">Session</td>
+        <td class="underline">Activity</td>
+        <td class="underline">Start</td>
+    </thead>
+    {% for datasingle in datalist %}
+    <tr>
+        <td><a href="{{ url_for('.view', id=datasingle.id) }}">{{datasingle.name}}</a></td>
+        <td>{{datasingle.end_date.strftime('%Y-%m-%d %H:%M')}}</td>
+        <td>{{datasingle.start_date.strftime('%Y-%m-%d %H:%M')}}</td>
+    </tr>
+    {% endfor %}
+
+    <!-- Row for adding new Sessions -->
+    <tr>
+        <td><form name="AddForm" method="POST" action="{{ url_for('.list') }}">
+            {{ form.csrf_token }}
+            {{ form.hidden_tag() }}
+            {{ with_errors(form.name, autofocus="autofocus") }}
+        </form></td>
+        <td><a href="javascript:submitAddform()">add</a></td>
+        <td></td>
+    </tr>
+    
+</table>
+
+<hr>
+<p>
+    {% if prev_url %}
+        <a href="{{ prev_url }}">prev</a>
+    {% else %}
+        prev
+    {% endif %}
+    |
+    {% if next_url %}
+        <a href="{{ next_url }}">next</a>
+    {% else %}
+        next
+    {% endif %}
+</p>
+{% endblock %}

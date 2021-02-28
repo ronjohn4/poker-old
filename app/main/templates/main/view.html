@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% macro with_errors(field) %}
+    <div class="form_field">
+    {% if field.errors %}
+        {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
+        {{ field(class=css_class, **kwargs) }}
+        <ul class="errors">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
+    {% else %}
+        {{ field(**kwargs) }}
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% block content %}
+<script type="text/javascript">
+    function submitAddform()
+    {
+        document.AddForm.submit();
+        return false;
+    }
+
+    function confirmDelete()
+    {
+        if ( confirm("Delete this Session and all History?") == false ) {
+            return false;
+        } else {
+            window.location.href = "{{ url_for('.delete', id=datasingle.id) }}";
+            return true;
+        }
+    }
+</script>
+<h2>Planning Poker</h2>
+
+<h3>{{datasingle.name}}</h3>
+Start: {{datasingle.end_date.strftime('%Y-%m-%d %H:%M')}}<br>
+End: {{datasingle.start_date.strftime('%Y-%m-%d %H:%M')}}<br>
+<div class='pagenav'>
+<a class='navelem' href="{{ url_for('.list') }}">back</a>
+ | <a class='navelem' href="#" onclick="return confirmDelete();">delete</a>
+</div>
+
+<h3>Players</h3>
+{% if playerlist %}
+    <table class='list'>
+        <thead class='listhead'>
+            <td class="listcell">Player</td>
+            <td class="underline listcell">Vote</td>
+            <td></td>
+        </thead>
+        {% for player in playerlist %}
+            <tr class="listrow">
+                <td class="listcell">{{player.username}}</td>
+                <td class='listcell'>{{player.vote}}</td>
+                {% if current_user.id == player.id %}
+                <td class='listcell'>
+                    {% for v in ['0','1', '2', '3', '5', '8', '13', '20', '40', '100', '?', 'ꝏ', 'pass'] %}
+                        <a href="{{ url_for('.vote', id=current_user.id, vote=v) }}">{{v}}</a>
+                    {% endfor %}
+                </td>
+                {% else %}
+                    <td class='listcell'></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <div class='listnav'>
+        {% if player_prev_url %}
+            <a class='navelem' href="{{ player_prev_url }}">prev</a>
+        {% else %}
+            prev
+        {% endif %}
+        |
+        {% if player_next_url %}
+            <a class='navelem' href="{{ player_next_url }}">next</a>
+        {% else %}
+            next
+        {% endif %}
+        | show
+    </div>
+{% else %}
+    No Players for this Session
+{% endif %}
+
+<h3>Voting History</h3>
+
+<form name="AddForm" method="POST" action="{{ url_for('.addhistory') }}">
+    {{ form.csrf_token }}{{ form.hidden_tag() }}
+    <p>{{ with_errors(form.story, autofocus="autofocus") }} {{ with_errors(form.value, autofocus="autofocus") }}</p>
+</form>
+<a href="javascript:submitAddform()">add</a>
+
+{% if historylist %}
+    <table class='list'>
+        <thead class='listhead'>
+            <td class="underline listcell">Story</td>
+            <td class="underline listcell">Vote</td>
+        </thead>
+        {% for history in historylist %}
+            <tr>
+                <td class='listcell'>{{history.story}}</td>
+                <td class='listcell'>{{history.value}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <div class='listnav'>
+        {% if history_prev_url %}
+            <a class='navelem' href="{{ history_prev_url }}">prev</a>
+        {% else %}
+            prev
+        {% endif %}
+        |
+        {% if history_next_url %}
+            <a class='navelem' href="{{ history_next_url }}">next</a>
+        {% else %}
+            next
+        {% endif %}
+    </div>
+{% else %}
+    No History for this Session
+{% endif %}
+
+{% endblock %}
