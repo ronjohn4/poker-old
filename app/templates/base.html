@@ -18,7 +18,7 @@
                 {% if current_user.is_anonymous %}
                     <a href="{{ url_for('auth.login') }}">login</a>
                 {% else %}
-                    <a href="{{ url_for('auth.logout') }}">logout</a>
+                    <a href="{{ url_for('auth.logout') }}">logout</a> ({{ current_user.username }})
                 {% endif %}
             </div>
         </div>

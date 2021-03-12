@@ -40,7 +40,8 @@ class Session(db.Model):
     end_date = db.Column(db.DateTime)
     is_active = db.Column(db.Boolean)
     history = relationship("History", cascade="all, delete", passive_deletes=True)
-    player = relationship("User")
+    players = relationship("User", cascade="all, delete", passive_deletes=True, foreign_keys="[User.current_session_id]", lazy="dynamic")
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
 
     def __repr__(self):
         return '<Session {}>'.format(self.name)
@@ -66,7 +67,7 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
-    session_id = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=True)
+    current_session_id = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=True)
  
     def __repr__(self):
         return '<User {}>'.format(self.username)

@@ -2,3 +2,4 @@
 /app.db
 /venv
 */__pycache__
+app/main/__pycache__/routes.cpython-39.pyc

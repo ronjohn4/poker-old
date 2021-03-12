@@ -7,7 +7,7 @@
         {{ field(class=css_class, **kwargs) }}
         <ul class="errors">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
     {% else %}
-        {{ field(**kwargs) }}
+        {{ field.label }} {{ field(**kwargs) }}
     {% endif %}
     </div>
 {% endmacro %}
@@ -85,11 +85,25 @@ End: {{datasingle.start_date.strftime('%Y-%m-%d %H:%M')}}<br>
 
 <h3>Voting History</h3>
 
-<form name="AddForm" method="POST" action="{{ url_for('.addhistory') }}">
-    {{ form.csrf_token }}{{ form.hidden_tag() }}
-    <p>{{ with_errors(form.story, autofocus="autofocus") }} {{ with_errors(form.value, autofocus="autofocus") }}</p>
-</form>
-<a href="javascript:submitAddform()">add</a>
+{% if datasingle.owner_id == current_user.id %}
+    <table class='list'>
+        <tr>
+            <td class='listcell'>
+                <form name="AddForm" method="POST" action="{{ url_for('.addhistory') }}">
+                {{ form.csrf_token }}{{ form.hidden_tag() }}{{ with_errors(form.story, autofocus="autofocus") }}
+            </td>
+            <td class='listcell'></td>
+        </tr>
+        <tr>
+            <td class='listcell'><form name="AddForm" method="POST" action="{{ url_for('.addhistory') }}">
+                {{ with_errors(form.value, autofocus="autofocus") }}
+                </form>
+            </td>
+            <td class='listcell'><a href="javascript:submitAddform()">add</a></td>
+        </tr>
+    </table>
+{% endif %}
+
 
 {% if historylist %}
     <table class='list'>

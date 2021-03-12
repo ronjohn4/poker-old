@@ -93,7 +93,7 @@ def view(id):
 
     form = HistoryForm()
     data_single = User.query.filter_by(id=current_user.id).first_or_404()
-    data_single.session_id = id
+    data_single.current_session_id = id
     db.session.commit()
 
     playerpage = request.args.get('playerpage', player_lastpage, type=int)
@@ -104,7 +104,7 @@ def view(id):
 
     data_single = Session.query.filter_by(id=id).first_or_404()
 
-    playerlist = User.query.filter_by(session_id=data_single.id).paginate(playerpage,
+    playerlist = User.query.filter_by(current_session_id=data_single.id).paginate(playerpage,
                     current_app.config['ROWS_PER_PAGE_FILTER'], False)
 
     player_next_url = url_for('.view', id=id, playerpage=playerlist.next_num,
@@ -112,8 +112,6 @@ def view(id):
 
     player_prev_url = url_for('.view', id=id, playerpage=playerlist.prev_num,
                                 historypage=historypage) if playerlist.has_prev else None
-
-
 
     historylist = History.query.filter_by(session_id=data_single.id).paginate(historypage,
                     current_app.config['ROWS_PER_PAGE_FILTER'], False)

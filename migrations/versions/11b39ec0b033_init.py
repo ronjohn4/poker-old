@@ -1,8 +1,8 @@
-"""remove nullable=False
+"""init
 
-Revision ID: c4e0352ea122
+Revision ID: 11b39ec0b033
 Revises: 
-Create Date: 2021-02-15 09:18:15.241490
+Create Date: 2021-03-11 17:23:54.337363
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c4e0352ea122'
+revision = '11b39ec0b033'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,19 +36,22 @@ def upgrade():
     sa.Column('start_date', sa.DateTime(), nullable=True),
     sa.Column('end_date', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.Column('owner_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['owner_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=True),
     sa.Column('email', sa.String(length=120), nullable=True),
+    sa.Column('vote', sa.String(length=10), nullable=True),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
     sa.Column('about_me', sa.String(length=140), nullable=True),
     sa.Column('last_seen', sa.DateTime(), nullable=True),
     sa.Column('token', sa.String(length=32), nullable=True),
     sa.Column('token_expiration', sa.DateTime(), nullable=True),
-    sa.Column('session_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['session_id'], ['session.id'], ),
+    sa.Column('current_session_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['current_session_id'], ['session.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
@@ -57,9 +60,8 @@ def upgrade():
     op.create_table('history',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('session_id', sa.Integer(), nullable=False),
-    sa.Column('player_id', sa.Integer(), nullable=False),
+    sa.Column('story', sa.String(), nullable=True),
     sa.Column('value', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['player_id'], ['user.id'], ondelete='cascade'),
     sa.ForeignKeyConstraint(['session_id'], ['session.id'], ondelete='cascade'),
     sa.PrimaryKeyConstraint('id')
     )
