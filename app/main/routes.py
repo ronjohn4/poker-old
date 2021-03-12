@@ -34,7 +34,7 @@ def list():
         db.session.commit()
         lastpagelist = 0  # go back to first page after add, the new row will be on top
         form.name.data = ''
-        # redirect(url_for('.list'))  # this will come right back to this route with a fresh form
+        return redirect(url_for('.view', id=var.id))
 
     page = request.args.get('page', lastpagelist, type=int)
     lastpagelist = page
