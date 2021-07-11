@@ -4,7 +4,7 @@ from werkzeug.urls import url_parse
 from app import db
 from app.auth import bp
 from app.auth.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
-from app.models import User
+from app.models import User, clear_user_activity
 from app.auth.email import send_password_reset_email
 
 
@@ -28,6 +28,8 @@ def login():
 
 @bp.route('/logout')
 def logout():
+    # TODO - trigger game refresh if game was cleared
+    clear_user_activity(current_user.id)
     logout_user()
     return redirect(url_for('main.list'))
 

@@ -1,28 +1,70 @@
 <!doctype html>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 <html>
     <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"> -->
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
         {% if title %}
-            <title>RJC - {{ title }}</title>
+            <title>Poker - {{ title }}</title>
         {% else %}
-            <title>RJC</title>
+            <title>Poker</title>
         {% endif %}
     </head>
     <body>
-        <div>
-            <div style="float:left;">
-                <a href="{{ url_for('main.list') }}" style="text-decoration: none; font-size:32px;">RJC</a>
+        <nav class="blue darken-2">
+            <div class="container">
+              <div class="nav-wrapper">
+                <a href="{{ url_for('main.list') }}" class="brand-logo">Poker</a>
+                <a href="#" data-activates="side-nav" class="button-collapse show-on-large right">
+                  <i class="material-icons">menu</i>
+                </a>
+                <!-- Side nav -->
+                <ul id="side-nav" class="side-nav">
+                  <li>
+                    <div class="user-view">
+                      <div class="background">
+                        <img src="{{ url_for('static', filename='img/ocean.jpg') }}" alt="">
+                      </div>
+                      <a href="#">
+                        <img src="{{ url_for('static', filename='img/person1.jpg') }}" alt="" class="circle">
+                      </a>
+                      <a href="#">
+                        <span class="name white-text">John Doe</span>
+                      </a>
+                      <a href="#">
+                        <span class="email white-text">jdoe@gmail.com</span>
+                      </a>
+                    </div>
+                  </li>
+                  <li>
+                    <a href="{{ url_for('main.list') }}">
+                      <i class="material-icons">dashboard</i> Poker</a>
+                  </li>
+
+                  <li>
+                    <div class="divider"></div>
+                  </li>
+                  <li>
+                    <a class="subheader">Account Controls</a>
+                  </li>
+                  <li>
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.logout') }}" class="waves-effect">Logout</a>
+                        {% else %}
+                            <a href="{{ url_for('auth.login') }}" class="waves-effect">Login</a>
+                        {% endif %}
+                    </li>
+                </ul>
+              </div>
             </div>
-            <div style="float:right;">
-                <a href="{{ url_for('main.list') }}">home</a> |
-                {% if current_user.is_anonymous %}
-                    <a href="{{ url_for('auth.login') }}">login</a>
-                {% else %}
-                    <a href="{{ url_for('auth.logout') }}">logout</a> ({{ current_user.username }})
-                {% endif %}
-            </div>
-        </div>
-        <br>
+          </nav>
+
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <ul class="messaged-ul">
@@ -32,6 +74,12 @@
                 </ul>
             {% endif %}
         {% endwith %}
-        {% block content %}{% endblock %}
+
+
+
+       {% block content %}{% endblock %}
+
+
+
     </body>
 </html>

@@ -38,9 +38,6 @@ def create_app(config_class=Config):
     login.init_app(app)
     bootstrap.init_app(app)
 
-    from app.audit import bp as audit_bp
-    app.register_blueprint(audit_bp, url_prefix='/audit', template_folder='templates')
-
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth', template_folder='templates')
 

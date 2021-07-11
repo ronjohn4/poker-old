@@ -1,17 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, HiddenField
+from wtforms import StringField, BooleanField, HiddenField, SubmitField
 from wtforms.validators import DataRequired
 
 
-class SessionFormInline(FlaskForm):
-    id = HiddenField('id:')
-    name = StringField('', validators=[DataRequired()])
+# class SessionFormInline(FlaskForm):
+#     id = HiddenField('id:')
+#     name = StringField('', validators=[DataRequired()])
 
-    def load(self, data):
-        self.id.default = data.id
-        self.name.default = data.name
-        self.is_active.default = data.is_active
-        self.process()
+#     def load(self, data):
+#         self.id.default = data.id
+#         self.name.default = data.name
+#         self.is_active.default = data.is_active
+#         self.process()
 
 
 class SessionForm(FlaskForm):
@@ -37,3 +37,7 @@ class HistoryForm(FlaskForm):
         self.story.default = data.story
         self.value = data.value
         self.process()
+
+class AddGameForm(FlaskForm):
+    game_name = StringField('Game Name', validators=[DataRequired()])
+    submit = SubmitField('Add Game')
