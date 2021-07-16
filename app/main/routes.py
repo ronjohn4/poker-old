@@ -7,27 +7,6 @@ from app.main.forms import SessionForm, HistoryForm, AddGameForm
 from datetime import datetime
 
 
-@bp.route('/addgame/<name>', methods=["PUT"])
-def addgame(name):
-    # form = SessionForm()
-    # if form.validate_on_submit():
-    var = Session(
-        # owner_id=current_user.id,
-        name=name,
-        start_date=datetime.now(),
-        end_date=datetime.now(),
-        is_active=True
-        )
-    db.session.add(var)
-    db.session.flush()  # flush() so the id is populated after add
-    db.session.commit()
-    # form.name.data = ''
-
-    status_code = Response(status=200)
-    
-    return status_code
-
-
 @bp.route('/')
 @bp.route('/list/', methods=["GET", "POST"])
 def list():

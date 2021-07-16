@@ -16,7 +16,7 @@ from wtforms.validators import DataRequired
 
 class SessionForm(FlaskForm):
     id = HiddenField('id:')
-    name = StringField('', validators=[DataRequired()])
+    name = StringField('', validators=[DataRequired()], render_kw={'autofocus': True})
 
     def load(self, data):
         self.id.default = data.id
@@ -28,7 +28,7 @@ class SessionForm(FlaskForm):
 class HistoryForm(FlaskForm):
     id = HiddenField('id:')
     session_id = HiddenField('session_id:')
-    story = StringField('story:', validators=[DataRequired()])
+    story = StringField('story:', validators=[DataRequired()], render_kw={'autofocus': True})
     value = StringField('value:', validators=[DataRequired()])
 
     def load(self, data):
@@ -39,5 +39,5 @@ class HistoryForm(FlaskForm):
         self.process()
 
 class AddGameForm(FlaskForm):
-    game_name = StringField('Game Name', validators=[DataRequired()])
+    game_name = StringField('Game Name', validators=[DataRequired()], render_kw={'autofocus': True})
     submit = SubmitField('Add Game')

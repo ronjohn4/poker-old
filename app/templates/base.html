@@ -31,15 +31,23 @@
                       <div class="background">
                         <img src="{{ url_for('static', filename='img/ocean.jpg') }}" alt="">
                       </div>
-                      <a href="#">
-                        <img src="{{ url_for('static', filename='img/person1.jpg') }}" alt="" class="circle">
-                      </a>
-                      <a href="#">
-                        <span class="name white-text">John Doe</span>
-                      </a>
-                      <a href="#">
-                        <span class="email white-text">jdoe@gmail.com</span>
-                      </a>
+                      {% if current_user.is_authenticated %}
+                        <a href="#">
+                          <img src="{{ url_for('static', filename='img/person1.jpg') }}" alt="" class="circle">
+                        </a>
+                        <a href="#">
+                          <span class="name white-text">John Doe</span>
+                        </a>
+                        <a href="#">
+                          <span class="email white-text">jdoe@gmail.com</span>
+                        </a>
+                      {% else %}
+                        <a href="#">
+                          <img src=None alt="" class="circle">
+                        </a>
+                        <br>
+                        <br>
+                      {% endif %} 
                     </div>
                   </li>
                   <li>

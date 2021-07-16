@@ -1,24 +1,16 @@
-// document.querySelector('.get-jokes').addEventListener('click', getJokes);
-document.querySelector('.add-game').addEventListener('click', getJokes);
+document.querySelector('.add-game').addEventListener('click', addGame);
+document.querySelector('.delete-game').addEventListener('click', deleteGame);
 
-// test comment
 
-function getJokes(e) {
-  console.log('getJokes() 2');
-
+// add a Game to the db and display list and also display the result in the message list
+function addGame(e) {
+  // console.log('addGame() start');
 
   var gamelist = document.querySelector('.games').innerHTML;
   // console.log('gamelist:' + gamelist);
 
   const game = document.getElementById('game').value;
-  // var url = window.location.host;
-
-  // console.log(url);
-
-  // url = url.concat(`/addgame/${game}`);
-
   // console.log(game);
-  // console.log(url);
 
   const xhr = new XMLHttpRequest();
 
@@ -27,28 +19,54 @@ function getJokes(e) {
   xhr.onload = function() {
     if(this.status === 200) {
       // const response = JSON.parse(this.responseText);
-
       // console.log(response);
       
-      // let output = '';
-
+      // TODO - Update Game list (or insert new game at top of list) if game added
       if(response.type === 'success') {
-      //   response.value.forEach(function(joke){
-          gamelist = `<tr><td><a href="/view/37">r6</a>      ${game}</td><td>mm/dd/yyyy</td></tr>` + gamelist;
-      //   });
-      // } else {
-      //   output += '<li>Something went wrong</li>';
+          gamelist = `<tr><td><a href="/view/37">r6</a>${game}</td><td>mm/dd/yyyy</td></tr>` + gamelist;
       }
 
-      // document.querySelector('.jokes').innerHTML = output;
       document.querySelector('.games').innerHTML = gamelist;
-      // console.log(output);
-      // alert('Game added');
+
+      // TODO - add Game Added message to message list
     }
   }
-
   
   xhr.send(game);
+  e.preventDefault();
+}
 
+
+// delete the Game from the db and display list and also display the result in the message list
+function deleteGame(e) {
+  // console.log('deleteGame() start');
+
+  var gamelist = document.querySelector('.games').innerHTML;
+  // console.log('gamelist:' + gamelist);
+
+  const game = document.getElementById('game').value;
+  // console.log(game);
+
+  const xhr = new XMLHttpRequest();
+
+  xhr.open('PUT', `/addgame/${game}`, true);
+
+  xhr.onload = function() {
+    if(this.status === 200) {
+      // const response = JSON.parse(this.responseText);
+      // console.log(response);
+      
+      // TODO - Update Game list (or insert new game at top of list) if game added
+      if(response.type === 'success') {
+          gamelist = `<tr><td><a href="/view/37">r6</a>${game}</td><td>mm/dd/yyyy</td></tr>` + gamelist;
+      }
+
+      document.querySelector('.games').innerHTML = gamelist;
+
+      // TODO - add Game Added message to message list
+    }
+  }
+  
+  xhr.send(game);
   e.preventDefault();
 }
