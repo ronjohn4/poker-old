@@ -1,139 +1,194 @@
 {% extends "base.html" %}
 
-{% macro with_errors(field) %}
-    <div class="form_field">
-    {% if field.errors %}
-        {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
-        {{ field(class=css_class, **kwargs) }}
-        <ul class="errors">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
-    {% else %}
-        {{ field.label }} {{ field(**kwargs) }}
-    {% endif %}
-    </div>
-{% endmacro %}
-
 {% block content %}
-<script type="text/javascript">
-    function submitAddform()
-    {
-        document.AddForm.submit();
-        return false;
-    }
+<section class="section section-posts grey lighten-4">
+    <div class="container">
+      <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Players in game {{datasingle.name}}</span>
+              {% if playerlist %}
+                <table class="striped ">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Vote</th>
+                    </tr>
+                    </thead>
 
-    function confirmDelete()
-    {
-        if ( confirm("Delete this Session and all History?") == false ) {
-            return false;
-        } else {
-            window.location.href = "{{ url_for('.delete', id=datasingle.id) }}";
-            return true;
-        }
-    }
-</script>
-<h2>Planning Poker</h2>
+                    <tbody>
+                        {% for player in playerlist %}
+                            <tr>
+                                <td>{{player.username}}</td>
+                                <td>{{player.vote}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
-<h3>{{datasingle.name}}</h3>
-Start: {{datasingle.end_date.strftime('%Y-%m-%d %H:%M')}}<br>
-End: {{datasingle.start_date.strftime('%Y-%m-%d %H:%M')}}<br>
-<div class='pagenav'>
-<a class='navelem' href="{{ url_for('.list') }}">back</a>
- | <a class='navelem' href="#" onclick="return confirmDelete();">delete</a>
-</div>
-
-<h3>Players</h3>
-{% if playerlist %}
-    <table class='list'>
-        <thead class='listhead'>
-            <td class="listcell">Player</td>
-            <td class="underline listcell">Vote</td>
-            <td></td>
-        </thead>
-        {% for player in playerlist %}
-            <tr class="listrow">
-                <td class="listcell">{{player.username}}</td>
-                <td class='listcell'>{{player.vote}}</td>
-                {% if current_user.id == player.id %}
-                <td class='listcell'>
-                    {% for v in ['0','1', '2', '3', '5', '8', '13', '20', '40', '100', '?', 'ꝏ', 'pass'] %}
-                        <a href="{{ url_for('.vote', id=current_user.id, vote=v) }}">{{v}}</a>
-                    {% endfor %}
-                </td>
                 {% else %}
-                    <td class='listcell'></td>
+                    No Players for this Session
                 {% endif %}
-            </tr>
-        {% endfor %}
-    </table>
-
-    <div class='listnav'>
-        {% if player_prev_url %}
-            <a class='navelem' href="{{ player_prev_url }}">prev</a>
-        {% else %}
-            prev
-        {% endif %}
-        |
-        {% if player_next_url %}
-            <a class='navelem' href="{{ player_next_url }}">next</a>
-        {% else %}
-            next
-        {% endif %}
-        | show
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-{% else %}
-    No Players for this Session
-{% endif %}
+  </section>
 
-<h3>Voting History</h3>
+  <section class="section section-posts grey lighten-4">
+    <div class="container">
+      <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">History</span>
 
-{% if datasingle.owner_id == current_user.id %}
-    <table class='list'>
-        <tr>
-            <td class='listcell'>
-                <form name="AddForm" method="POST" action="{{ url_for('.addhistory') }}">
-                {{ form.csrf_token }}{{ form.hidden_tag() }}{{ with_errors(form.story, autofocus="autofocus") }}
-            </td>
-            <td class='listcell'></td>
-        </tr>
-        <tr>
-            <td class='listcell'><form name="AddForm" method="POST" action="{{ url_for('.addhistory') }}">
-                {{ with_errors(form.value, autofocus="autofocus") }}
-                </form>
-            </td>
-            <td class='listcell'><a href="javascript:submitAddform()">add</a></td>
-        </tr>
-    </table>
-{% endif %}
-
-
-{% if historylist %}
-    <table class='list'>
-        <thead class='listhead'>
-            <td class="underline listcell">Story</td>
-            <td class="underline listcell">Vote</td>
-        </thead>
-        {% for history in historylist %}
-            <tr>
-                <td class='listcell'>{{history.story}}</td>
-                <td class='listcell'>{{history.value}}</td>
-            </tr>
-        {% endfor %}
-    </table>
-
-    <div class='listnav'>
-        {% if history_prev_url %}
-            <a class='navelem' href="{{ history_prev_url }}">prev</a>
-        {% else %}
-            prev
-        {% endif %}
-        |
-        {% if history_next_url %}
-            <a class='navelem' href="{{ history_next_url }}">next</a>
-        {% else %}
-            next
-        {% endif %}
+              {% if historylist %}
+                <table class="striped">
+                    <thead>
+                        <tr>
+                            <th>Story</th>
+                            <th>Vote</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for history in historylist %}
+                        <tr>
+                            <td>{{history.story}}</td>
+                            <td>{{history.value}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+              {% else %}
+                No History for this Session
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-{% else %}
-    No History for this Session
-{% endif %}
+  </section>
+
+
+  
+    <footer class="section blue darken-2 white-text center">
+        <p>Poker Copyright &copy 2021</p>
+    </footer>
+
+
+  <!-- Fixed Action Button -->
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large red">
+      <i class="material-icons">mode_edit</i>
+    </a>
+    <ul>
+        <li>
+            <a href="#vote-modal" class="modal-trigger btn-floating blue">
+                <i class="material-icons">how_to_vote</i>
+            </a>
+        </li>
+      <li>
+        <a href="{{ url_for('main.list') }}" class="btn-floating red">
+          <i class="material-icons">delete</i>
+        </a>
+      </li>
+            <li>
+        <a href="{{ url_for('main.view', id=datasingle.id) }}" class="btn-floating green">
+          <i class="material-icons">add</i>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+
+    <div id="vote-modal" class="modal">
+        <div class="modal-content">
+            <form method="post">
+                <table>
+                    <tr>
+                        <td style="vertical-align:top">
+                            <p>
+                                <input type="radio" name="vote" id="vote0">
+                                <label for="vote0">0</label>
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="vote1">
+                                <label for="vote1">1</label>
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="vote2">
+                                <label for="vote2">2</label>
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="vote3">
+                                <label for="vote3">3</label>
+                            </p>
+                        </td>
+                        <td style="vertical-align:top">
+                            <p>
+                                <input type="radio" name="vote" id="vote5">
+                                <label for="vote5">5</label>
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="vote8">
+                                <label for="vote8">8</label>
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="vote13">
+                                <label for="vote13">13</label>
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="vote20">
+                                <label for="vote20">20</label>
+                            </p>
+                        </td>
+                        <td style="vertical-align:top">
+                            <p>
+                                <input type="radio" name="vote" id="vote40">
+                                <label for="vote40">40</label>
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="vote100">
+                                <label for="vote100">100</label>
+
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="voteQ">
+                                <label for="voteQ">?</label>
+                            </p>
+                            <p>
+                                <input type="radio" name="vote" id="voteU">
+                                <label for="voteU">ꝏ</label>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div class="modal-footer">
+                <a href="{{ url_for('main.view', id=datasingle.id) }}" class="modal-action modal-close btn blue white-text">Vote</a>
+            </div>
+        </div>
+    </div>
+
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+  <script>
+    $(document).ready(function () {
+      // INIT SELECT LIST
+      $('select').material_select();
+
+      // Init Side nav
+      $('.button-collapse').sideNav();
+
+      // INIT modal
+      $('.modal').modal();
+    });
+  </script>
 
 {% endblock %}

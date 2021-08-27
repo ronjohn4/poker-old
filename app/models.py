@@ -149,18 +149,34 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+def clear_user_activity(id):
+    data_single = User.query.filter_by(id=id).first()
+    if data_single is not None:
+        data_single.current_session_id = None
+        data_single.vote = None
+        db.session.commit()
+
+
+def clear_game_votes(session_id):
+    players = User.query.filter_by(current_session_id=session_id).all()
+    for player in players:
+        player.vote = None
+    db.session.commit()
+
+
 class History(db.Model):
     __tablename__ = 'history'
 
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete="cascade"), nullable=False)
+    a_datetime = db.Column(db.DateTime)
     story = db.Column(db.String)
     value = db.Column(db.String)
 
     def __repr__(self):
         return '<History {}>'.format(self.id)
 
-
+# All audit code was removed 5/16/2021
 # parent_id is not a foreign key so can be used by multiple models
 class Audit(db.Model):
     __tablename__ = 'audit'
